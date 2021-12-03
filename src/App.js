@@ -4,6 +4,7 @@ import Spacer from './components/common/Spacer'
 import TopBar from './components/common/TopBar'
 import Slider from './components/home/Slider'
 import CustomerServices from './components/services/CustomerServices'
+import Vehicles from './components/services/Vehicles'
 
 const App = () => {
   return (
@@ -13,6 +14,9 @@ const App = () => {
       <Slider/>
       <Spacer/>
       <CustomerServices/>
+      <Spacer/>
+      <Vehicles/>
+      <Spacer/>
     </div>
   )
 }
