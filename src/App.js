@@ -1,4 +1,5 @@
 import React from 'react'
+import Footer from './components/common/Footer'
 import MenuBar from './components/common/MenuBar'
 import Spacer from './components/common/Spacer'
 import TopBar from './components/common/TopBar'
@@ -17,6 +18,7 @@ const App = () => {
       <Spacer/>
       <Vehicles/>
       <Spacer/>
+      <Footer/>
     </div>
   )
 }
