@@ -204,6 +204,68 @@ body{
     overflow-y: auto;
 }
 
+/************ NEWSLETTER ************/
+
+.newsletter {
+    background-color: var(--color4);
+    padding: 3rem;
+}
+
+.newsletter .row {
+    justify-content: center;
+    align-items: center;
+}
+
+
+/************ PAGE HEADER ************/
+
+.page-header{
+    padding: 4rem;
+    text-align: center;
+    position: relative;
+ }
+ 
+ .page-header::after{
+     content: "";
+     position: absolute;
+     left:0;
+     top:0;
+     bottom:0;
+     right:0;
+     background-image: url(../img/page-header-bg.jpg);
+     background-position: center center;
+     background-size: cover;
+     background-repeat: no-repeat;
+     opacity: 0.3;
+     z-index: 1;
+  }
+ 
+  .page-header::before{
+     content: "";
+     position: absolute;
+     left:0;
+     top:0;
+     bottom:0;
+     right:0;
+     background-color: var(--color1-transparent-15);
+     z-index: 2;
+  }
+ 
+ 
+ .page-header .header-content{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+ }
+ 
+ .page-header .breadcrumb a{
+     text-decoration: none;
+ }
+
+
+
 /************ FOOTER ************/
 
 
@@ -220,11 +282,20 @@ footer ul{
     display: flex;
     justify-content: center;
     margin-bottom:1rem;
+    
 }
 
-footer ul li{
+footer ul li a{
+    color: var(--color4);
+    text-decoration: none ;
     margin-left: 2rem;
     border-bottom: 2px solid var(--color2);
+    
+}
+
+footer ul li a:hover{
+    color: var(--color5);
+    border-bottom: 3px solid var(--color5);
 }
 
 footer ul li:first-child{
