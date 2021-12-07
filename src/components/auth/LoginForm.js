@@ -1,84 +1,120 @@
-import React, {useState} from 'react'
+import React, { useState } from "react";
 import {
-    Container,
-    Row,
-    Col,
-    Form,
-    Button,
-    Card,
-    Spinner,
-  } from "react-bootstrap";
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Card,
+  Spinner,
+} from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { getUser, login } from "../../api/user-service";
+import { toast } from "react-toastify";
+import { useStore } from "../../store";
+import { loginFailed, loginSuccess } from "../../store/user/userActions";
 
 const LoginForm = () => {
+  const [loading, setLoading] = useState(false);
+  const { dispatchUser } = useStore();
+  const navigate = useNavigate();
 
-    const [loading, setloading] = useState(false);
+  const initialValues = {
+    email: "",
+    password: "",
+  };
 
-    const initialValues = {
-        email: "",
-        password: "",
-    }
+  const validationSchema = Yup.object({
+    email: Yup.string().email().required("Please enter your email"),
+    password: Yup.string().required("Please enter your password"),
+  });
 
-    const validationSchema = Yup.object({
-        email: Yup.string().email().required("Please Enter your amail"),
-        password: Yup.string().required("Please enter your password")
-    })
+  const onSubmit = (values) => {
+    setLoading(true);
 
-    const onSubmit = (values) => {
-        console.log(values);
-    }
+    login(values)
+      .then((respLogin) => {
+        localStorage.setItem("token", respLogin.data.token);
 
-    const formik = useFormik({
-        initialValues, validationSchema, onSubmit
-    })
+        getUser().then((respUser) => {
+          console.log(respUser);
+          dispatchUser(loginSuccess(respUser.data));
+          navigate("/");
+          setLoading(false);
+        })
+        .catch(err=> {
+          toast(err.response.data.message);
+          setLoading(false);
+          dispatchUser(loginFailed());
+        })
 
-    return (
-        <Container>
-            <Row>
-                <Col md={{span:6, offset:3}} lg={{span:4, offset:4}}>
-                    <Card>
-                        <Card.Body>
-                            <Form noValidate onSubmit={formik.handleSubmit}>
-                                <Form.Group className="mb-3" controlId="formBasicEmail">
-                                <Form.Label>Email address</Form.Label>
-                                <Form.Control
-                                    type="email"
-                                    {...formik.getFieldProps("email")}
-                                    isInvalid={!!formik.errors.email}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {formik.errors.email}
-                                </Form.Control.Feedback>
-                            </Form.Group>
+        
+      })
+      .catch((err) => {
+        toast(err.response.data.message);
+        setLoading(false);
+      });
+  };
 
-                            <Form.Group className="mb-3" controlId="formBasicPassword">
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    {...formik.getFieldProps("password")}
-                                    isInvalid={!!formik.errors.password}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {formik.errors.password}
-                                </Form.Control.Feedback>
-                            </Form.Group>
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit,
+  });
 
-                            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-                                <Button variant="primary" type="submit" disabled={loading}>
-                                    {loading && <Spinner animation="border" size="sm" />} Login
-                                </Button>
+  return (
+    <Container>
+      <Row>
+        <Col md={{ span: 6, offset: 3 }} lg={{ span: 4, offset: 4 }}>
+          <Card>
+            <Card.Body>
+              <Form noValidate onSubmit={formik.handleSubmit}>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Label>Email address</Form.Label>
+                  <Form.Control
+                    type="email"
+                    {...formik.getFieldProps("email")}
+                    isInvalid={!!formik.errors.email}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {formik.errors.email}
+                  </Form.Control.Feedback>
+                </Form.Group>
 
-                                <Link to="/register">Create new user</Link>
-                            </div>
-                            </Form>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-        </Container>
-    )
-}
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    {...formik.getFieldProps("password")}
+                    isInvalid={!!formik.errors.password}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {formik.errors.password}
+                  </Form.Control.Feedback>
+                </Form.Group>
 
-export default LoginForm
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Button variant="primary" type="submit" disabled={loading}>
+                    {loading && <Spinner animation="border" size="sm" />} Login
+                  </Button>
+
+                  <Link to="/register">Create new user</Link>
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
+  );
+};
+
+export default LoginForm;
