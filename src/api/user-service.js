@@ -15,5 +15,13 @@ const getUser = () => {
   return axios.get(`${API_URL}user`, { headers: authHeader() });
 };
 
+const updateUser = (user) => {
+  return axios.put(`${API_URL}user`, user, { headers: authHeader() })
+}
 
-export { login, register, getUser };
+const updatePassword = (credentials) => {
+  return axios.patch(`${API_URL}user/auth`, credentials, { headers: authHeader() })
+}
+
+
+export { login, register, getUser, updateUser, updatePassword };
