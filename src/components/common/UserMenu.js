@@ -3,7 +3,7 @@ import { Button, DropdownButton, Dropdown } from 'react-bootstrap'
 import {
   FiUser,
 } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../../store";
 import { logout } from "../../store/user/userActions";
 import * as alertify from "alertifyjs";
@@ -12,6 +12,7 @@ const UserMenu = () => {
 
     const { userState, dispatchUser } = useStore();
     const { user, isUserLogin } = userState;
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         alertify.confirm(
@@ -20,6 +21,7 @@ const UserMenu = () => {
             () => {
                 dispatchUser(logout());
                 localStorage.removeItem("token");
+                navigate("/");
               },
               () => {
                   console.log("canceled");
