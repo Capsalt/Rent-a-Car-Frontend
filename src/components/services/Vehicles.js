@@ -1,88 +1,103 @@
-import React, { useState } from 'react'
-import { Col, Container, Row, Button, Image, Table, Dropdown } from 'react-bootstrap'
-import { FiChevronDown, FiChevronUp, FiCheck, FiX } from 'react-icons/fi'
-import SectionTitle from '../common/SectionTitle'
-import { vehicleList } from '../../data/vehicleList';
-
-const Vehicle = () => {
-
-    const [vehicles, setVehicle] = useState(vehicleList);
-    const [activeVehicle, setActiveVehicle] = useState(0);
-    const [startIndex, setStartIndex] = useState(0);
-    const vehiclesLength = 5;
-    
-
-    const handleStartIndex = (index) => {
-      if (index<0 || index>vehicles.length - vehiclesLength - 1) return ;
-      setStartIndex(index);
-
-    }
-    
+import React, { useState } from "react";
+import {
+  Col,
+  Container,
+  Row,
+  Button,
+  Image,
+  Table,
+  Dropdown,
+} from "react-bootstrap";
+import { FiCheck, FiChevronDown, FiChevronUp, FiX } from "react-icons/fi";
+import { useStore } from "../../store";
+import SectionTitle from "../common/SectionTitle";
 
 
+const Vehicles = () => {
+  const { vehiclesState } = useStore();
+  const { vehicles } = vehiclesState;
 
-    return (
-       <Container>
-           <SectionTitle title="Vehicles"/>
-            <Row>
-                <Col lg={3}>
+  console.log(vehicles);
+  
+  const [activeVehicle, setActiveVehicle] = useState(0);
+  const [startIndex, setStartIndex] = useState(0);
+  const vehiclesLength = 5;
 
-                <Dropdown size="lg" className="d-lg-none vehiclesDropDown">
-                  <Dropdown.Toggle className="w-100">
-                  {vehicles[activeVehicle].model}
-                  </Dropdown.Toggle>
+  const handleStartIndex = (index) => {
+    if (index < 0 || index > vehicles.length - vehiclesLength - 1) return;
+    setStartIndex(index);
+  };
 
-                  <Dropdown.Menu>
-                  {vehicles.map((vehicle, index) => (
-                  <Dropdown.Item
+  return (
+     
+    <Container>
+
+      <SectionTitle title="Vehicles" />
+      <Row>
+        <Col lg={3}>
+          <Dropdown size="lg" className="d-lg-none vehiclesDropDown">
+            <Dropdown.Toggle className="w-100">
+              {vehicles[activeVehicle].model}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              {vehicles.map((vehicle, index) => (
+                <Dropdown.Item
+                  key={vehicle.id}
+                  onClick={() => setActiveVehicle(index)}
+                >
+                  {vehicle.model}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+
+          <ul className="vehicleList d-none d-lg-block">
+            <li>
+              <Button
+                onClick={() => handleStartIndex(startIndex - 1)}
+                disabled={startIndex <= 0}
+              >
+                <FiChevronUp />
+              </Button>
+            </li>
+            {vehicles.map((vehicle, index) => {
+              if (index >= startIndex && index <= startIndex + vehiclesLength) {
+                return (
+                  <li
                     key={vehicle.id}
+                    className={index === activeVehicle ? "active" : ""}
                     onClick={() => setActiveVehicle(index)}
                   >
                     {vehicle.model}
-                  </Dropdown.Item>
-              ))}
-                  </Dropdown.Menu>
-                </Dropdown>
+                  </li>
+                );
+              }
+              return null;
+            })}
 
-
-
-
-                    <ul className="vehicleList d-none d-lg-block">
-                        <li><Button onClick={() => handleStartIndex(startIndex-1)} disabled={startIndex<=0}>
-                          <FiChevronUp/>
-                          </Button></li>
-                        {vehicles.map((vehicle,index) => {
-                          
-                          if (index>=startIndex && index<=startIndex+vehiclesLength) {
-                            return(
-                              <li key={vehicle.id} className={index===activeVehicle ?"active" : ""}
-                              onClick={()=> setActiveVehicle(index)}
-                              >
-                                  {vehicle.model}</li>
-                            );
-                          
-                            }
-
-                          }
-                            
-                        )}
-                        
-                        <li><Button onClick={() => handleStartIndex(startIndex+1)} 
-                        disabled = {startIndex>=vehicles.length - vehiclesLength-1}>
-                          <FiChevronDown/>
-                          </Button></li>
-                    </ul>
-
-                </Col>
-                <Col lg={6}>
-                    <Image src={`/assets/img/cars/${vehicles[activeVehicle].image}`} className="img-fluid"/>
-                </Col>
-                <Col lg={3}>
-                <Table striped bordered hover>
+            <li>
+              <Button
+                onClick={() => handleStartIndex(startIndex + 1)}
+                disabled={startIndex >= vehicles.length - vehiclesLength - 1}
+              >
+                <FiChevronDown />
+              </Button>
+            </li>
+          </ul>
+        </Col>
+        <Col lg={6}>
+          <Image
+          src={`${process.env.REACT_APP_API_URL}files/display/${vehicles[activeVehicle].image[0]}`}
+          className="img-fluid"
+          />
+        </Col>
+        <Col lg={3}>
+          <Table striped bordered hover>
             <thead>
               <tr>
                 <th colSpan={2}>
-                  <h3>${vehicles[activeVehicle].pricePerDay} per day</h3>
+                  <h3>${vehicles[activeVehicle].pricePerHour} per hour</h3>
                 </th>
               </tr>
             </thead>
@@ -109,9 +124,12 @@ const Vehicle = () => {
               </tr>
               <tr>
                 <td>Air Conditioning</td>
-                <td>{
-                  vehicles[activeVehicle].airConditioning ? <FiCheck /> : <FiX />
-                  }
+                <td>
+                  {vehicles[activeVehicle].airConditioning ? (
+                    <FiCheck />
+                  ) : (
+                    <FiX />
+                  )}
                 </td>
               </tr>
               <tr>
@@ -124,11 +142,11 @@ const Vehicle = () => {
               </tr> 
             </tbody>
           </Table>
-                </Col>
-            </Row>
-       </Container>
+        </Col>
+      </Row>
+    </Container>
+    
+  );
+};
 
-    )
-}
-
-export default Vehicle
+export default Vehicles;
