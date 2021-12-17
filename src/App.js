@@ -26,13 +26,13 @@ const App = () => {
       dispatchVehicles(setVehiclesInStore(respVehicles.data));
       
 
+
       /**** LOAD USER ****/
       const respUser = await getUser();
       if (respUser.status !== 200) throw "An error occured whlie getting user";
       dispatchUser(loginSuccess(respUser.data));
 
       setLoading(false);
-      
 
     } catch (error) {
       console.log(error);
