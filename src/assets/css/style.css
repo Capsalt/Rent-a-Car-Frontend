@@ -284,7 +284,29 @@ body{
      text-decoration: none;
  }
 
+/************ ADMIN ************/
 
+.image-area {
+    background-color: var(--color4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .image-area button {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    opacity: 0.8;
+  }
+  
+  .image-area-error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
 /************ FOOTER ************/
 
